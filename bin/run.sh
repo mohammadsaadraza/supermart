@@ -2,7 +2,7 @@
 
 # Add script to run program here.
 # Complete bin/setup so that after it is
-# run, bin/run can be used to launch
+# run, bin/run can be used to launc
 # it.
 
 # This variable contains absolute path of this `run` script
