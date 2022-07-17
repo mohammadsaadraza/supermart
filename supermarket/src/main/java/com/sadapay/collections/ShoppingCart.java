@@ -106,6 +106,16 @@ public class ShoppingCart {
         this.offers.put(name, token);
     }
 
+    public String listCartItems(){
+        StringBuilder out = new StringBuilder();
+        out.append("Name Price Quantity");
+
+        for (Item i : items.values()){
+            out.append("\n").append(i.getName()).append(" ").append(i.getAmount()).append(" ").append(i.getQuantity());
+        }
+        return out.toString();
+    }
+
     public static ShoppingCart getInstance() {
         if (instance == null){
             instance = new ShoppingCart();

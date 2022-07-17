@@ -7,45 +7,45 @@ import com.sadapay.entities.Offer;
 
 public class Main {
     public static void main(String[] args) {
-        ShoppingCart s = ShoppingCart.getInstance();
-
-        s.addToCart("bread", 10.5, 11);
-        s.addToCart("soap", 10.0, 4);
-
-        System.out.println(s.invoice());
-
-        s.applyDiscount(Offer.buy_1_get_half_off, "bread");
-        s.applyDiscount(Offer.buy_1_get_half_off, "soap");
-
-        s.removeFromCart("soap", 2);
-
-        System.out.println(s.invoice());
-        System.out.println(s);
-
-//        Inventory i = Inventory.getInstance();
+//        ShoppingCart s = ShoppingCart.getInstance();
 //
-//        i.addItem("bread", 10.0, 20);
-//        i.addItem("soap", 20.0, 30);
+//        s.addToCart("bread", 10.5, 11);
+//        s.addToCart("soap", 10.0, 4);
 //
-//        i.consumeItem("bread", 10);
-//        i.consumeItem("soap", 28);
+//        System.out.println(s.invoice());
 //
-//        try{
-//            i.consumeItem("soap", 5);
-//        }catch (ArithmeticException e){
-//            System.out.println(e.getMessage());
-//        }
+//        s.applyDiscount(Offer.buy_1_get_half_off, "bread");
+//        s.applyDiscount(Offer.buy_1_get_half_off, "soap");
 //
-//        i.stockItem("bread", 10);
-//        i.stockItem("soap", 30);
+//        s.removeFromCart("soap", 2);
 //
-//        i.removeItem("soap");
-//
-//        System.out.println(i);
+//        System.out.println(s.invoice());
+//        System.out.println(s);
+//        System.out.println(s.listCartItems());
 
+        Inventory i = Inventory.getInstance();
 
+        i.addItem("bread", 10.0, 20);
+        i.addItem("soap", 20.0, 30);
 
+        System.out.println(i.listItems());
 
+        i.consumeItem("bread", 10);
+        i.consumeItem("soap", 28);
 
+        System.out.println(i.listItems());
+
+        try{
+            i.consumeItem("soap", 5);
+        }catch (ArithmeticException e){
+            System.out.println(e.getMessage());
+        }
+
+        i.stockItem("bread", 10);
+        i.stockItem("soap", 30);
+
+        i.removeItem("soap");
+
+        System.out.println(i);
     }
 }

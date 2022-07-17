@@ -71,6 +71,15 @@ public class Inventory {
         i.setQuantity(i.getQuantity() + stock);
         return this.add(i);
     }
+    public String listItems(){
+        StringBuilder out = new StringBuilder();
+        out.append("Name Price Quantity");
+
+        for (Item i : items.values()){
+            out.append("\n").append(i.getName()).append(" ").append(i.getAmount()).append(" ").append(i.getQuantity());
+        }
+        return out.toString();
+    }
 
     public static Inventory getInstance(){
         if(instance == null){

@@ -1,6 +1,7 @@
 functional_spec/.rspec_status
 .DS_Store
 .idea
+.gradle
 out
 build
 
