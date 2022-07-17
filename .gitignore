@@ -4,4 +4,4 @@ functional_spec/.rspec_status
 .gradle
 out
 build
-
+/supermarket/.gradle/
