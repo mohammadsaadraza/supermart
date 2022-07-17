@@ -1,6 +1,7 @@
 package com.sadapay.collections;
 
 import com.sadapay.entities.Item;
+
 import java.util.*;
 
 /**
@@ -161,7 +162,7 @@ public class Inventory {
     }
 
     /**
-     * @return String representation of Inventory and the Items inside.
+     * @return String representation of Inventory and the Items inside
      */
     @Override
     public String toString() {

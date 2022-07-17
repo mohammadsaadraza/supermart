@@ -3,6 +3,8 @@ package com.sadapay.collections;
 import com.sadapay.entities.Item;
 import com.sadapay.entities.Offer;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -141,6 +143,7 @@ public class ShoppingCart {
      * @return String
      */
     public String invoice(){
+
         Double totalPrice = 0.0; Double discounts = 0.0;
 
         for(Item i : items.values()){
@@ -148,7 +151,16 @@ public class ShoppingCart {
             discounts += this.getDiscountPrice(i);
         }
 
-        return "subtotal:" + totalPrice + ", discount:" + discounts + ", total:" + (totalPrice - discounts);
+        Double net = totalPrice - discounts;
+
+        totalPrice = new BigDecimal(totalPrice.toString()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        discounts = new BigDecimal(discounts.toString()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        net = new BigDecimal(net.toString()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+        Formatter formatter = new Formatter();
+        formatter.format("subtotal:%.2f, discount:%.2f, total:%.2f", totalPrice, discounts, net);
+        return formatter.toString();
+
     }
 
     /**
@@ -203,12 +215,13 @@ public class ShoppingCart {
     }
 
     /**
-     * @return String representation of ShoppingCart and the Items inside.
+     * @return String representation of ShoppingCart and the Items inside
      */
     @Override
     public String toString() {
         return "ShoppingCart{" +
                 "items=" + items +
+                ", offers=" + offers +
                 '}';
     }
 }

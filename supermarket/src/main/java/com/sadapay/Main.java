@@ -2,6 +2,8 @@ package com.sadapay;
 
 import com.sadapay.collections.Inventory;
 import com.sadapay.collections.ShoppingCart;
+import com.sadapay.collections.SuperMart;
+import com.sadapay.entities.Item;
 import com.sadapay.entities.Offer;
 
 
@@ -23,29 +25,55 @@ public class Main {
 //        System.out.println(s);
 //        System.out.println(s.listCartItems());
 
-        Inventory i = Inventory.getInstance();
+//        Inventory i = Inventory.getInstance();
+//
+//        i.addItem("bread", 10.0, 20);
+//        i.addItem("soap", 20.0, 30);
+//
+//        System.out.println(i.listItems());
+//
+//        i.consumeItem("bread", 10);
+//        i.consumeItem("soap", 28);
+//
+//        System.out.println(i.listItems());
+//
+//        try{
+//            i.consumeItem("soap", 5);
+//        }catch (ArithmeticException e){
+//            System.out.println(e.getMessage());
+//        }
+//
+//        i.stockItem("bread", 10);
+//        i.stockItem("soap", 30);
+//
+//        i.removeItem("soap");
+//
+//        System.out.println(i);
 
-        i.addItem("bread", 10.0, 20);
-        i.addItem("soap", 20.0, 30);
+        SuperMart mart = SuperMart.getInstance();
 
-        System.out.println(i.listItems());
+        mart.loadInventory(new Item("bread", 2.50, 10));
+        mart.loadInventory(new Item("soap", 10.00, 100));
 
-        i.consumeItem("bread", 10);
-        i.consumeItem("soap", 28);
+        System.out.println(mart.checkout());
+        System.out.println(mart.add("soap", 5));
+        System.out.println(mart.add("bread", 1));
+        System.out.println(mart.bill());
 
-        System.out.println(i.listItems());
+        System.out.println(mart.offer(Offer.buy_2_get_1_free.name(), "soap"));
+        System.out.println(mart.bill());
 
-        try{
-            i.consumeItem("soap", 5);
-        }catch (ArithmeticException e){
-            System.out.println(e.getMessage());
-        }
+        System.out.println(mart.add("soap", 1));
+        System.out.println(mart.bill());
 
-        i.stockItem("bread", 10);
-        i.stockItem("soap", 30);
+        System.out.println(mart.offer(Offer.buy_1_get_half_off.name(), "bread"));
+        System.out.println(mart.add("bread", 1));
 
-        i.removeItem("soap");
+        System.out.println(mart.bill());
+        System.out.println(mart.checkout());
 
-        System.out.println(i);
+        System.out.println(mart.checkout());
+
+        System.out.println(mart.toString());
     }
 }
