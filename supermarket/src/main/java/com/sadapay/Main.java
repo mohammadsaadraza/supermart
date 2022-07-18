@@ -1,109 +1,127 @@
 package com.sadapay;
 
-import com.sadapay.collections.Inventory;
-import com.sadapay.collections.ShoppingCart;
-import com.sadapay.collections.SuperMart;
-import com.sadapay.entities.Item;
-import com.sadapay.entities.Offer;
 import com.sadapay.utils.Interpreter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.util.*;
 
+
+/**
+ * Entrypoint into the system
+ */
 public class Main {
-    public static void main(String[] args) {
-//        ShoppingCart s = ShoppingCart.getInstance();
-//
-//        s.addToCart("bread", 10.5, 11);
-//        s.addToCart("soap", 10.0, 4);
-//
-//        System.out.println(s.invoice());
-//
-//        s.applyDiscount(Offer.buy_1_get_half_off, "bread");
-//        s.applyDiscount(Offer.buy_1_get_half_off, "soap");
-//
-//        s.removeFromCart("soap", 2);
-//
-//        System.out.println(s.invoice());
-//        System.out.println(s);
-//        System.out.println(s.listCartItems());
 
-//        Inventory i = Inventory.getInstance();
-//
-//        i.addItem("bread", 10.0, 20);
-//        i.addItem("soap", 20.0, 30);
-//
-//        System.out.println(i.listItems());
-//
-//        i.consumeItem("bread", 10);
-//        i.consumeItem("soap", 28);
-//
-//        System.out.println(i.listItems());
-//
-//        try{
-//            i.consumeItem("soap", 5);
-//        }catch (ArithmeticException e){
-//            System.out.println(e.getMessage());
-//        }
-//
-//        i.stockItem("bread", 10);
-//        i.stockItem("soap", 30);
-//
-//        i.removeItem("soap");
-//
-//        System.out.println(i);
+    private static Interpreter cli;
 
-//        SuperMart mart = SuperMart.getInstance();
-//
-//        mart.loadInventory(new Item("bread", 2.50, 10));
-//        mart.loadInventory(new Item("soap", 10.00, 100));
-//
-//        System.out.println(mart.checkout());
-//        System.out.println(mart.add("soap", 5));
-//        System.out.println(mart.add("bread", 1));
-//        System.out.println(mart.bill());
-//
-//        System.out.println(mart.offer(Offer.buy_2_get_1_free.name(), "soap"));
-//        System.out.println(mart.bill());
-//
-//        System.out.println(mart.add("soap", 1));
-//        System.out.println(mart.bill());
-//
-//        System.out.println(mart.offer(Offer.buy_1_get_half_off.name(), "bread"));
-//        System.out.println(mart.add("bread", 1));
-//
-//        System.out.println(mart.bill());
-//        System.out.println(mart.checkout());
-//
-//        System.out.println(mart.checkout());
-//
-//        System.out.println(mart.toString());
+//    private final Interpreter cli;
+    /**
+     * Starting Function. Depending on args, it decides the control flow of the system; interactive mode or file mode.
+     * @param args Command Line Args
+     * @throws IllegalArgumentException
+     */
+    public static void main(String[] args) throws IllegalArgumentException, FileNotFoundException, ParseException, NumberFormatException{
 
-        Interpreter ci = Interpreter.getInstance();
+        File inventoryFile = null;
+        File commandFile = null;
 
-        ci.mart.loadInventory(new Item("bread", 2.50, 10));
-        ci.mart.loadInventory(new Item("soap", 10.00, 100));
+//        Checking the count of args. This particular system needs 1 or 2 args.
+        if(! (args.length < 3 && args.length > 0) ){
+            throw new IllegalArgumentException("Received "  + args.length + " args. Correct Args Format: <inventory.csv> <command.txt>?");
+        }
 
-        System.out.println(ci.command("checkout"));
-        System.out.println(ci.command("add soap 5"));
-        System.out.println(ci.command("added bread 1"));
-        System.out.println(ci.command("bill"));
+//        Initializes the interpreter we will use
+        cli = Interpreter.getInstance();
 
-        System.out.println(ci.command("offer buy_2_get_1jhj_free soap"));
-        System.out.println(ci.command("bill"));
+//        Checks for the validity of inventory file and its presence
+        inventoryFile = loadFile(args[0], ".csv");
 
-        System.out.println(ci.command("add soap 1"));
-        System.out.println(ci.command("bill"));
+//        Checks the avialability of command file and its validity
+        if (args.length == 2 && args[1] != null){
+            commandFile = loadFile(args[1], ".txt");
 
-        System.out.println(ci.command("offer buy_1_get_half_off bread"));
-        System.out.println(ci.command("add bread 1"));
+//            Goes to file mode, when both files are present
+            file_mode(inventoryFile, commandFile);
+            return;
+        }
 
-        System.out.println(ci.command("list carthg"));
+//        initiates the interactive cli
+        interactive_mode(inventoryFile);
+        return;
 
-        System.out.println(ci.command("remove soap 6hbh"));
-        System.out.println(ci.command("remove bread 2"));
-        System.out.println(ci.command("bill"));
-        System.out.println(ci.command("checkout"));
+    }
 
-        System.out.println(ci.mart.toString());
+    /**
+     * Prepares a file to be read. Otherwise, throws and error
+     * @param filePath relative file path
+     * @param extension extension of file, .csv or .txt
+     * @return File
+     * @throws FileNotFoundException
+     */
+    public static File loadFile(String filePath, String extension) throws FileNotFoundException {
+        File file = new File(filePath);
+        if (! (file.exists() && file.isFile() && file.canRead() && file.toString().endsWith(extension)) ){
+            throw new FileNotFoundException("File " + filePath + " not found relative to the working directory." +
+                    " Argument must be a " + extension + " file.");
+        }
+        return file;
+    }
 
+    /**
+     * Function for Interactive Mode
+     * @param inventoryFile
+     */
+    public static void interactive_mode(File inventoryFile) throws FileNotFoundException, ParseException, NumberFormatException {
+
+        Scanner read = new Scanner(inventoryFile);
+
+        while(read.hasNext()){
+            List<String> contents = new ArrayList<>();
+
+            for(String s : read.nextLine().split(",")){
+                contents.add(s.trim());
+            }
+
+            if(contents.size() != 3) {
+                throw new ParseException("Got " + contents.size() + " columns. Required 3 columns.", contents.size());
+            }
+
+            try {
+                cli.loadItemIntoInventory(contents.get(0),
+                        Double.valueOf(contents.get(1)),
+                        Integer.valueOf(contents.get(2)));
+            }catch (NumberFormatException e){
+                throw new NumberFormatException(e.getMessage()+" in "+inventoryFile.toString());
+            }
+        }
+
+        read.close();
+
+        Scanner console = new Scanner(System.in);
+
+        while(true){
+
+            System.out.print(">> ");
+            String input = console.nextLine();
+
+            if(Objects.equals(input, "exit")){
+                break;
+            }
+
+            System.out.println(cli.command(input));
+        }
+
+        console.close();
+
+    }
+
+    /**
+     * Function for File Mode
+     * @param inventoryFile
+     * @param commandFile
+     */
+    public static void file_mode(File inventoryFile, File commandFile){
+        System.out.println("File");
     }
 }

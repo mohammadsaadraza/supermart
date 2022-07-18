@@ -1,0 +1,5 @@
+checkout
+add soap 5
+add bread 1
+bill
+checkout

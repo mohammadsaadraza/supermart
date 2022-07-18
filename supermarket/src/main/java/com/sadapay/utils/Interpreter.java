@@ -1,6 +1,7 @@
 package com.sadapay.utils;
 
 import com.sadapay.collections.SuperMart;
+import com.sadapay.entities.Item;
 
 /**
  * Command Interpreter for SuperMart System. This is a Singleton class
@@ -8,13 +9,23 @@ import com.sadapay.collections.SuperMart;
 public class Interpreter {
 
     private static Interpreter instance = null;
-    public final SuperMart mart;
+    private final SuperMart mart;
 
     /**
      * Private Constructor. Initializes the SuperMart Class.
      */
     private Interpreter(){
         mart = SuperMart.getInstance();
+    }
+
+    /**
+     * Loads the Items at startup into Inventory
+     * @param name Name of Item
+     * @param amount Price of Item
+     * @param quantity Quantity of Item
+     */
+    public void loadItemIntoInventory(String name, Double amount, Integer quantity){
+        this.mart.loadInventory(new Item(name, amount, quantity));
     }
 
     /**
