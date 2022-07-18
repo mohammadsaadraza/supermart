@@ -5,6 +5,7 @@ import com.sadapay.collections.ShoppingCart;
 import com.sadapay.collections.SuperMart;
 import com.sadapay.entities.Item;
 import com.sadapay.entities.Offer;
+import com.sadapay.utils.Interpreter;
 
 
 public class Main {
@@ -50,30 +51,59 @@ public class Main {
 //
 //        System.out.println(i);
 
-        SuperMart mart = SuperMart.getInstance();
+//        SuperMart mart = SuperMart.getInstance();
+//
+//        mart.loadInventory(new Item("bread", 2.50, 10));
+//        mart.loadInventory(new Item("soap", 10.00, 100));
+//
+//        System.out.println(mart.checkout());
+//        System.out.println(mart.add("soap", 5));
+//        System.out.println(mart.add("bread", 1));
+//        System.out.println(mart.bill());
+//
+//        System.out.println(mart.offer(Offer.buy_2_get_1_free.name(), "soap"));
+//        System.out.println(mart.bill());
+//
+//        System.out.println(mart.add("soap", 1));
+//        System.out.println(mart.bill());
+//
+//        System.out.println(mart.offer(Offer.buy_1_get_half_off.name(), "bread"));
+//        System.out.println(mart.add("bread", 1));
+//
+//        System.out.println(mart.bill());
+//        System.out.println(mart.checkout());
+//
+//        System.out.println(mart.checkout());
+//
+//        System.out.println(mart.toString());
 
-        mart.loadInventory(new Item("bread", 2.50, 10));
-        mart.loadInventory(new Item("soap", 10.00, 100));
+        Interpreter ci = Interpreter.getInstance();
 
-        System.out.println(mart.checkout());
-        System.out.println(mart.add("soap", 5));
-        System.out.println(mart.add("bread", 1));
-        System.out.println(mart.bill());
+        ci.mart.loadInventory(new Item("bread", 2.50, 10));
+        ci.mart.loadInventory(new Item("soap", 10.00, 100));
 
-        System.out.println(mart.offer(Offer.buy_2_get_1_free.name(), "soap"));
-        System.out.println(mart.bill());
+        System.out.println(ci.command("checkout"));
+        System.out.println(ci.command("add soap 5"));
+        System.out.println(ci.command("added bread 1"));
+        System.out.println(ci.command("bill"));
 
-        System.out.println(mart.add("soap", 1));
-        System.out.println(mart.bill());
+        System.out.println(ci.command("offer buy_2_get_1jhj_free soap"));
+        System.out.println(ci.command("bill"));
 
-        System.out.println(mart.offer(Offer.buy_1_get_half_off.name(), "bread"));
-        System.out.println(mart.add("bread", 1));
+        System.out.println(ci.command("add soap 1"));
+        System.out.println(ci.command("bill"));
 
-        System.out.println(mart.bill());
-        System.out.println(mart.checkout());
+        System.out.println(ci.command("offer buy_1_get_half_off bread"));
+        System.out.println(ci.command("add bread 1"));
 
-        System.out.println(mart.checkout());
+        System.out.println(ci.command("list carthg"));
 
-        System.out.println(mart.toString());
+        System.out.println(ci.command("remove soap 6hbh"));
+        System.out.println(ci.command("remove bread 2"));
+        System.out.println(ci.command("bill"));
+        System.out.println(ci.command("checkout"));
+
+        System.out.println(ci.mart.toString());
+
     }
 }
