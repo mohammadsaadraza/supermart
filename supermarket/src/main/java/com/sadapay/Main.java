@@ -60,12 +60,58 @@ public class Main {
      * @throws FileNotFoundException
      */
     public static File loadFile(String filePath, String extension) throws FileNotFoundException {
+
         File file = new File(filePath);
+
+//        check if file exists and is readable and has the expected extension
         if (! (file.exists() && file.isFile() && file.canRead() && file.toString().endsWith(extension)) ){
             throw new FileNotFoundException("File " + filePath + " not found relative to the working directory." +
                     " Argument must be a " + extension + " file.");
         }
+
         return file;
+    }
+
+    /**
+     * Function for Initializing Inventory at startup
+     * @param file File Object for inventory.csv
+     * @throws FileNotFoundException
+     * @throws ParseException
+     * @throws NumberFormatException
+     */
+    public static void initializeInventory(File file) throws FileNotFoundException, ParseException, NumberFormatException{
+
+        Scanner read = new Scanner(file);
+
+        while(read.hasNext()){
+            List<String> contents = new ArrayList<>();
+            String input = read.nextLine();
+
+//            Remove any blank/extra lines in file
+            if(input.isBlank()){
+                continue;
+            }
+
+            for(String s : input.split(",")){
+                contents.add(s.trim());
+            }
+
+//            Check if format of .csv file is right
+            if(contents.size() != 3) {
+                throw new ParseException("Got " + contents.size() + " columns. Required 3 columns.", contents.size());
+            }
+
+//            Loads items, throws error if conversion of data isn't possible
+            try {
+                cli.loadItemIntoInventory(contents.get(0),
+                        Double.valueOf(contents.get(1)),
+                        Integer.valueOf(contents.get(2)));
+            }catch (NumberFormatException e){
+                throw new NumberFormatException(e.getMessage()+" in "+file.toString());
+            }
+        }
+
+        read.close();
     }
 
     /**
@@ -74,32 +120,11 @@ public class Main {
      */
     public static void interactive_mode(File inventoryFile) throws FileNotFoundException, ParseException, NumberFormatException {
 
-        Scanner read = new Scanner(inventoryFile);
-
-        while(read.hasNext()){
-            List<String> contents = new ArrayList<>();
-
-            for(String s : read.nextLine().split(",")){
-                contents.add(s.trim());
-            }
-
-            if(contents.size() != 3) {
-                throw new ParseException("Got " + contents.size() + " columns. Required 3 columns.", contents.size());
-            }
-
-            try {
-                cli.loadItemIntoInventory(contents.get(0),
-                        Double.valueOf(contents.get(1)),
-                        Integer.valueOf(contents.get(2)));
-            }catch (NumberFormatException e){
-                throw new NumberFormatException(e.getMessage()+" in "+inventoryFile.toString());
-            }
-        }
-
-        read.close();
+        initializeInventory(inventoryFile);
 
         Scanner console = new Scanner(System.in);
 
+//        console input loop
         while(true){
 
             System.out.print(">> ");
@@ -109,6 +134,7 @@ public class Main {
                 break;
             }
 
+//            execution of command
             System.out.println(cli.command(input));
         }
 
@@ -121,7 +147,28 @@ public class Main {
      * @param inventoryFile
      * @param commandFile
      */
-    public static void file_mode(File inventoryFile, File commandFile){
-        System.out.println("File");
+    public static void file_mode(File inventoryFile, File commandFile) throws FileNotFoundException, ParseException, NumberFormatException{
+
+        initializeInventory(inventoryFile);
+
+        Scanner read = new Scanner(commandFile);
+
+        while(read.hasNext()){
+
+            List<String> contents = new ArrayList<>();
+            String input = read.nextLine();
+
+//            skip blank lines in command file
+            if(input.isBlank()){
+                continue;
+            }
+
+//            prep the command by removing any unecessary whitespaces
+//            and execute
+            System.out.println(cli.command(input.replaceAll("\\s+", " ").trim()));
+
+        }
+
+        read.close();
     }
 }
