@@ -163,7 +163,7 @@ public class Main {
                 continue;
             }
 
-//            prep the command by removing any unecessary whitespaces
+//            prep the command by removing any unnecessary whitespaces
 //            and execute
             System.out.println(cli.command(input.replaceAll("\\s+", " ").trim()));
 

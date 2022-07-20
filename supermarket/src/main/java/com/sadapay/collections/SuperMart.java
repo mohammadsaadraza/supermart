@@ -88,7 +88,7 @@ public class SuperMart {
             return "offer " + token + " isn't available";
         }
         catch (NoSuchElementException e){
-            return name + " doesn't exist in inventory";
+            return name + " doesn't exist in cart";
         }
         catch(Exception e){
             return e.getMessage();
@@ -112,7 +112,7 @@ public class SuperMart {
             return "removed " + name + " " + quantity;
         }
         catch (NoSuchElementException e){
-            return name + " doesn't exist in inventory";
+            return name + " doesn't exist in inventory/cart";
         }
         catch (ArithmeticException e){
             return name + " quantity of " + quantity + " is more than present in cart";
