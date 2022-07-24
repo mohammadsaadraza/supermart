@@ -4,4 +4,8 @@ functional_spec/.rspec_status
 .gradle
 out
 build
-/supermarket/.gradle/
+
+bin
+functional_spec
+Assignment.pdf
+submit.*
